@@ -1,0 +1,140 @@
+#!/usr/bin/env node
+
+/**
+ * Module dependencies.
+ */
+
+// so the app defines route, error handle, etc
+// here we actually use it.
+// get the app
+var app = require('../app');
+
+// debug
+// basically, anything can pass to debug
+// express-cart with server
+var debug = require('debug')('express-cart:server');
+
+// http
+var http = require('http');
+
+/**
+ * Get port from environment and store in Express.
+ */
+
+// port
+// 
+var port = normalizePort(process.env.PORT || '3000');
+
+// app set
+// port
+app.set('port', port);
+
+/**
+ * Create HTTP server.
+ */
+
+// put app into server
+var server = http.createServer(app);
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+
+// server listent port
+server.listen(port);
+
+// server on error
+server.on('error', onError);
+
+
+server.on('listening', onListening);
+
+/**
+ * Normalize a port into a number, string, or false.
+ */
+// val
+function normalizePort(val) {
+  // port
+  // parse int
+  // val
+  // 10 means 10 decimal
+  var port = parseInt(val, 10);
+
+  // not able to do a 10 decimal, so use val straight away
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+
+  // port num, then return.
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+
+  return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+// on error
+// error. sys call
+// !==
+// listen
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    // throw error
+    throw error;
+  }
+
+  // pipe is write read file, no concept like packet.
+  // var bind
+  // typeof port
+  // string
+  // pipe port
+  // port port
+  var bind = typeof port === 'string'
+    ? 'Pipe ' + port
+    : 'Port ' + port;
+
+  // switch
+  // error.code
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    // e-acces
+    // previleges
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      // e-addr-in-use
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+// addr
+// server addr
+function onListening() {
+  var addr = server.address();
+  // bind type of addr
+  // === string
+  // pipe addr
+  // port addr.port
+  var bind = typeof addr === 'string'
+    ? 'pipe ' + addr
+    : 'port ' + addr.port;
+    
+  // listen  
+  debug('Listening on ' + bind);
+}
