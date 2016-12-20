@@ -17,20 +17,38 @@ var cookieParser = require('cookie-parser');
 // json, etc
 var bodyParser = require('body-parser');
 
-// index route
+// express handlebars
+var expressHbs = require('express-handlebars');
+
+var mongoose = require('mongoose');
+
+// An actual routing obj
 var index = require('./routes/index');
+
+// connect
+mongoose.connect('localhost:27017/shopping');
 
 // express app
 var app = express();
 
+
+// no need absolute path
 // view engine setup
 // ./views/error.hbs
 // ./views/index.hbs
-// ./views/layout.hbs
+// ./views/partials/header.hbs
+// ./views/layouts/layout.hbs
 app.set('views', path.join(__dirname, 'views'));
 
-// set view engin hbs
-app.set('view engine', 'hbs');
+// set view engine hbs
+app.engine('.hbs', expressHbs({
+	defaultLayout: 'layout',
+	extname: '.hbs'
+}));
+
+// view engine
+// need .hbs
+app.set('view engine', '.hbs');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));

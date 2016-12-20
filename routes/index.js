@@ -14,7 +14,7 @@ router.get('/', function(req, res, next) {
   // render
   // index
   // pass title in json
-  res.render('index', {
+  res.render('shop/index', {
     title: 'Shopping cart',
     testme_var: 'testme_var'
   });
