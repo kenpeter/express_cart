@@ -20,7 +20,18 @@ var bodyParser = require('body-parser');
 // express handlebars
 var expressHbs = require('express-handlebars');
 
+// mongo db
 var mongoose = require('mongoose');
+
+// session
+var session = require('express-session');
+
+// passport for user management
+var passport = require('passport');
+
+// msg flash
+var flash = require("connect-flash");
+
 
 // An actual routing obj
 var index = require('./routes/index');
@@ -74,6 +85,32 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 // app use
+// session
+// secret
+// resave
+// save uninitialized
+app.use(session({
+  secret: "secret",
+  resave: false,
+  saveUninitialized: false
+}));
+
+
+// flash above
+// flash is func
+app.use(flash());
+
+// app
+// .use
+// passport
+// initialized
+app.use(passport.initialize());
+
+// passport with session
+app.use(passport.session());
+
+
+// app use
 // express.static
 // path.join
 // ./public
@@ -85,8 +122,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 // what index.js has is there is router
 // inside router, there is res.render. Then template file index.hbs with vars
 app.use('/', index);
-//app.use('/users', users);
 
+
+
+// app.use(func(){})
+// app.use(func(){})
 // app.use
 // func
 // req, res, next
@@ -104,6 +144,7 @@ app.use(function(req, res, next) {
   err.status = 404;
   next(err);
 });
+
 
 // app.use
 // func
