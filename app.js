@@ -1,64 +1,80 @@
-// express
+// express engine
 var express = require('express');
 
-// ath
+// file path
 var path = require('path');
 
-// serve favicon
+// do fav icon
 var favicon = require('serve-favicon');
 
-// log
+// log msg
 var logger = require('morgan');
 
-// cookie parser
+// we need cookie and parse cookie
+// app.use
 var cookieParser = require('cookie-parser');
 
 // body parser
-// json, etc
+// json, html etc
 var bodyParser = require('body-parser');
 
-// express handlebars
+// html template engine
 var expressHbs = require('express-handlebars');
 
-// mongo db
+// database
 var mongoose = require('mongoose');
 
-// session
+// session for express
 var session = require('express-session');
 
-// passport for user management
+// passport for user sessino management
 var passport = require('passport');
 
-// msg flash
+// flash some msg on the top
 var flash = require("connect-flash");
 
 
-// An actual routing obj
+// this like the controller class
+// it has a few controller which links to view
 var index = require('./routes/index');
 
-// connect
+
+// localhost, port and db
 mongoose.connect('localhost:27017/shopping');
 
 // express app
 var app = express();
 
-
+// NOTE: app.use is for middle ware
 // no need absolute path
-// view engine setup
+// app.set
+// views, set the things we need, views dir
+// path.join
+// __dirname
+// ./views, set the actual path
 // ./views/error.hbs
 // ./views/index.hbs
 // ./views/partials/header.hbs
 // ./views/layouts/layout.hbs
 app.set('views', path.join(__dirname, 'views'));
 
-// set view engine hbs
+
+// app
+// .engine
+// .hbs
+// expressHbs == handle bar engine
+// default layout, layout
+// extention name == .hbs
 app.engine('.hbs', expressHbs({
 	defaultLayout: 'layout',
 	extname: '.hbs'
 }));
 
+
+// app
+// set
 // view engine
-// need .hbs
+// .hbs
 app.set('view engine', '.hbs');
 
 // uncomment after placing your favicon in /public
@@ -81,14 +97,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // app use
 // cookie parser
-
 app.use(cookieParser());
 
 // app use
 // session
-// secret
-// resave
-// save uninitialized
+// secret: secret
+// resave: false, don't resave session
+// save uninitialized, false, don't save session, if not init
 app.use(session({
   secret: "secret",
   resave: false,
@@ -96,50 +111,55 @@ app.use(session({
 }));
 
 
-// flash above
-// flash is func
+// app
+// use
+// flash()
+// flash msg
 app.use(flash());
+
 
 // app
 // .use
 // passport
 // initialized
+// init session with express app
 app.use(passport.initialize());
 
+// app
+// .use
 // passport with session
 app.use(passport.session());
 
 
 // app use
-// express.static
+// express.static, this how browser handle public visit
 // path.join
 // ./public
 app.use(express.static(path.join(__dirname, 'public')));
 
-// app use
-// / root
-// index is routes/index.js
-// what index.js has is there is router
-// inside router, there is res.render. Then template file index.hbs with vars
+
+// app.use
+// that is the entry point
+// index is the route, which is controller linking to views
 app.use('/', index);
 
 
 
-// app.use(func(){})
-// app.use(func(){})
 // app.use
 // func
-// req, res, next
-// catch 404 and forward to error handler
+// req
+// res
+// next
 app.use(function(req, res, next) {
-  // var err
-  // new Err
+  // var error
+  // new error obj
   // not found
   // err
   // status
   // 404
+  // next, move to next
   // next(err)
-  // 
+  // this guy uses next
   var err = new Error('Not Found');
   err.status = 404;
   next(err);
@@ -147,33 +167,31 @@ app.use(function(req, res, next) {
 
 
 // app.use
-// func
-// err, req, res, next
+// does it mean you can add err when you need to
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   // http://expressjs.com/en/api.html#res.locals
-  // res.locals
+  // res
+  // locals
   // message
-  // res.locals.message ==
-  // res.locals.error ==
+  // err
+  // .message
   res.locals.message = err.message;
   
   // res.locals.message exists in res scope
-  // res.locals.error
-  // req.app.get()
-  // env
-  // development
-  // err
+  // res
+  // locals
+  // error
+  // req.app.get, env
+  // what is req.app
+  // env === dev or error
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // res
-  // status
+  // so this guy use render
+  // res status
   // err status
   // 500
-  // res
-  // render
-  // error
-  // render the error page
+  // res render
   res.status(err.status || 500);
   res.render('error');
 });
