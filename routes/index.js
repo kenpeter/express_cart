@@ -1,27 +1,37 @@
-// another express
+// express
 var express = require('express');
 
-// express router
+// router
+// express
+// router
 var router = express.Router();
 
+// product
+// model product.js
 var Product = require('../models/product.js');
 
-//
+
+// csrf
 var csurf = require('csurf');
 
+// actually create csrf obj
 var csurfProtect = csurf();
 
+// as express router to use it
 router.use(csurfProtect);
 
 
-// router
-// get
-// /
-// req, res, next
-/* GET home page. */
+// router.get
+// root path
+// func, req, res, next
 router.get('/', function(req, res, next) {
   
+  // var products
+  // Product monga
+  // find
+  // func, err, doc
   var products = Product.find(function(err, doc){
+    // push 3 columns to each row
     var productRowTest = [];
     var productRow = [];
     var size = 3;
@@ -48,6 +58,14 @@ router.get('/', function(req, res, next) {
       productRowTest.push({test: "yo"});
     }
   
+    // res
+    // render
+    // shop
+    // /index
+    // pass data
+    // title
+    // prodctRow,
+    // ....
     // it auto searches views dir
     res.render('shop/index', {
       title: 'Shopping cart',
@@ -58,11 +76,26 @@ router.get('/', function(req, res, next) {
   });
 });
 
+
+// router
+// get
+// route: /user/signup
+// func, req, res, next
+// res
+// .render
+// the view user/signup
+// csrf, csrf token
 router.get("/user/signup", function(req, res, next){
   res.render("user/signup", {csurfProtect: req.csrfToken()});
 });
 
 
+// router
+// post
+// /user/signup
+// func, req, res, next
+// res
+// redirect
 router.post("/user/signup", function(req, res, next){
   res.redirect("/");
 });
