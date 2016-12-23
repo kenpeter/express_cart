@@ -2,7 +2,13 @@
   <div class="col-md-4 col-md-offset-4">
     <h1>Sign up</h1>
     
-    Validation Errors
+    {{#if hasError}}
+      <div class="alert alert-danger">
+        {{#each errorMsg}}
+          <p>{{ this }}</p>
+        {{/each}}
+      </div>
+    {{/if}}
     
     <form action="/user/signup" method="post">
       <!-- form group to group label and field -->

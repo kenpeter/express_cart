@@ -89,7 +89,10 @@ router.get('/', function(req, res, next) {
 // the view user/signup
 // csrf, csrf token
 router.get("/user/signup", function(req, res, next){
-  res.render("user/signup", {csurfProtect: req.csrfToken()});
+  // error
+  var errorMsg = req.flash('error');
+
+  res.render("user/signup", {csurfProtect: req.csrfToken(), errorMsg: errorMsg, hasError: errorMsg.length > 0});
 });
 
 
