@@ -17,6 +17,9 @@ var csurf = require('csurf');
 // actually create csrf obj
 var csurfProtect = csurf();
 
+// passport
+var passport = require("passport");
+
 // as express router to use it
 router.use(csurfProtect);
 
@@ -90,15 +93,22 @@ router.get("/user/signup", function(req, res, next){
 });
 
 
+router.get("/user/profile", function(req, res, next){
+  res.render("user/profile");
+});
+
+
 // router
 // post
 // /user/signup
 // func, req, res, next
 // res
 // redirect
-router.post("/user/signup", function(req, res, next){
-  res.redirect("/");
-});
+router.post("/user/signup", passport.authenticate('local.signup', {
+  successRedirect: '/user/profile',
+  failureRedirect: '/user/signup',
+  failureFlash: true
+}));
 
 
 // module

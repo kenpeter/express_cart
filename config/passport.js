@@ -15,7 +15,7 @@ var LocalStra = require("passport-local").Strategy;
 // passport serialized user
 // func, user, done
 // done, null, user.id, is it that is why we have a id in passport.deserializedUser
-passport.serializedUser(function(user, done){
+passport.serializeUser(function(user, done){
   done(null, user.id);
 });
 
@@ -25,7 +25,7 @@ passport.serializedUser(function(user, done){
 // User, find by id, id, callback func
 // err, user
 // done, err, user
-passport.deserializedUser(function(id, done){
+passport.deserializeUser(function(id, done){
   User.findById(id, function(err, user){
     done(err, user);
   });
@@ -44,10 +44,20 @@ passport.deserializedUser(function(id, done){
 // that is why we have callback func
 // func, req, email, password, can have more vars
 passport.use("local.signup", new LocalStra({
-  usernameField: 'email'
+  usernameField: 'email',
   passwordField: 'password',
   passReqtoCallback: true
-}, function(req, email, password, done){
+}, function(email, password, done){
+
+  
+  /*
+  // note, api has changed.
+  console.log("==test==");
+  console.log(email);
+  console.log(password);
+  console.log(done);
+  */
+
   // User, mongo
   // find one
   // use email to find
@@ -77,7 +87,24 @@ passport.use("local.signup", new LocalStra({
     newUser.email = email;
     
     // assign passport to user
-    newUser.password = password;  
+    // newUser from above user instance
+    newUser.password = newUser.encryptPassword(password);
+    
+    // new uesr instance
+    // save
+    // func
+    // err, result
+    newUser.save(function(err, result){
+      // err
+      // return
+      // done
+      // err
+      if(err) {
+        return done(err);
+      }
+      
+      return done(null, newUser);
+    });
   });
 
 }));

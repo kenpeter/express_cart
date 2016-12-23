@@ -4,11 +4,12 @@ nodejs and express shopping cart based on https://www.youtube.com/watch?v=-3vvxn
 
 
 ## Install
-
+npm install
 
 
 ## Run
-
+npm start
+visit http://localhost:3000
 
 
 ## App

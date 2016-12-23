@@ -42,6 +42,9 @@ var index = require('./routes/index');
 // localhost, port and db
 mongoose.connect('localhost:27017/shopping');
 
+// inject passport.js
+require("./config/passport.js");
+
 // express app
 var app = express();
 
