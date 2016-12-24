@@ -33,6 +33,9 @@ var passport = require('passport');
 // flash some msg on the top
 var flash = require("connect-flash");
 
+// validator
+var validator = require("express-validator");
+
 
 // this like the controller class
 // it has a few controller which links to view
@@ -90,6 +93,7 @@ app.use(logger('dev'));
 
 // app use
 // body parser
+// (), it is actually call the func
 // json
 app.use(bodyParser.json());
 
@@ -97,6 +101,13 @@ app.use(bodyParser.json());
 // https://stackoverflow.com/questions/29175465/body-parser-extended-option-qs-vs-querystring
 // extended: false use querystring lib, which simpler, supported by more browser
 app.use(bodyParser.urlencoded({ extended: false }));
+
+
+// validator after body parser
+// it is not validator, but validator().
+// call the actual func
+app.use(validator());
+
 
 // app use
 // cookie parser

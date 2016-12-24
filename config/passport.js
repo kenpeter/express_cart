@@ -46,10 +46,9 @@ passport.deserializeUser(function(id, done){
 passport.use("local.signup", new LocalStra({
   usernameField: 'email',
   passwordField: 'password',
-  passReqtoCallback: true
-}, function(email, password, done){
+  passReqToCallback: true // pass req to callback
+}, function(req, email, password, done){
 
-  
   /*
   // note, api has changed.
   console.log("==test==");
@@ -57,6 +56,44 @@ passport.use("local.signup", new LocalStra({
   console.log(password);
   console.log(done);
   */
+
+  // Handle error, after submit
+  // req
+  // check body
+  // email, the field
+  // invalid email, which is the error msg
+  req.checkBody('email', 'Invalid email').notEmpty().isEmail();
+  req.checkBody('password', 'Invalid password').notEmpty().isLength({min: 4});
+  
+  // multiple errors
+  // req
+  // validation
+  // errors
+  // ()
+  var errors = req.validationErrors();
+  
+  // if error
+  if(errors) {
+    // err array
+    var errMsg = [];
+    // loop
+    errors.forEach(function(err){
+      // push error
+      errMsg.push(err.msg);
+    });
+    
+    // return
+    // done
+    // null
+    // false
+    // flash
+    // error, key
+    // error msg
+    return done(null, false, req.flash('error', errMsg));
+  }
+  else {
+  
+  }
 
   // User, mongo
   // find one
@@ -71,6 +108,7 @@ passport.use("local.signup", new LocalStra({
       return done(err);
     }
     
+    // user already exist
     // user
     // return
     // passport done

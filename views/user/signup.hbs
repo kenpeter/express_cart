@@ -1,7 +1,12 @@
+<!-- row -->
 <div class="row">
+  
+  <!-- col md 4 -->
+  <!-- col md offset 4, it means move left 4 col -->
   <div class="col-md-4 col-md-offset-4">
     <h1>Sign up</h1>
     
+    <!-- error msg -->
     {{#if hasError}}
       <div class="alert alert-danger">
         {{#each errorMsg}}
@@ -10,6 +15,8 @@
       </div>
     {{/if}}
     
+    <!-- form -->
+    <!-- action /user/signup -->
     <form action="/user/signup" method="post">
       <!-- form group to group label and field -->
       <div class="form-group">

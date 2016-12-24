@@ -89,13 +89,30 @@ router.get('/', function(req, res, next) {
 // the view user/signup
 // csrf, csrf token
 router.get("/user/signup", function(req, res, next){
+
+  // we define req.flash('error', msg) in passport.js
+  // error msg
+  // req
+  // flash
   // error
   var errorMsg = req.flash('error');
 
+  // res
+  // render
+  // route user/signup
+  // csrf protect
+  // req
+  // csrf token
+  // error msg
+  // error msg
+  // has error
+  // error msg length
+  // >0 
   res.render("user/signup", {csurfProtect: req.csrfToken(), errorMsg: errorMsg, hasError: errorMsg.length > 0});
 });
 
 
+// user profile
 router.get("/user/profile", function(req, res, next){
   res.render("user/profile");
 });
