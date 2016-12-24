@@ -146,3 +146,92 @@ passport.use("local.signup", new LocalStra({
   });
 
 }));
+
+
+
+// passport
+// use
+passport.use("local.signin", new LocalStra({
+  usernameField: 'email',
+  passwordField: 'password',
+  passReqToCallback: true // pass req to callback
+}, function(req, email, password, done){
+
+  /*
+  // note, api has changed.
+  console.log("==test==");
+  console.log(email);
+  console.log(password);
+  console.log(done);
+  */
+
+  // req
+  // checkbody
+  // email
+  // invalid email
+  // not empty
+  // is email
+  req.checkBody('email', 'Invalid email').notEmpty().isEmail();
+  
+  // req
+  // checkbody
+  // password
+  // invalid password
+  // not empty
+  req.checkBody('password', 'Invalid password').notEmpty();
+  
+  // errors
+  // req
+  // req validate errors
+  var errors = req.validationErrors();
+  
+  // if error
+  if(errors) {
+    // err array
+    var errMsg = [];
+    // loop
+    errors.forEach(function(err){
+      // push error
+      errMsg.push(err.msg);
+    });
+    
+    // return
+    // done
+    // null
+    // false
+    // flash
+    // error, key
+    // error msg
+    return done(null, false, req.flash('error', errMsg));
+  }
+  else {
+  
+  }
+
+  // User, mongo
+  // find one
+  // use email to find
+  // callback func, err, user, why user here, just a row
+  User.findOne({'email': email}, function(err, user){
+    if(err) {
+      return done(err);
+    }
+    
+    // no such user
+    if(!user) {
+      return done(null, false, {message: 'email already there'});
+    }
+    
+    // validate password
+    // null means what?
+    // false means error
+    if(!user.validatePassword(password)) { 
+      return done(null, false, {message: 'password incorrect'});
+    }  
+   
+    // all good
+    // return user
+    return done(null, user);
+  });
+
+}));

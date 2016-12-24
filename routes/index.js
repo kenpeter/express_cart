@@ -112,10 +112,19 @@ router.get("/user/signup", function(req, res, next){
 });
 
 
+// sign in page
+router.get("/user/signin", function(req, res, next){
+  var errorMsg = req.flash('error');
+
+  res.render("user/signin", {csurfProtect: req.csrfToken(), errorMsg: errorMsg, hasError: errorMsg.length > 0});
+});
+
+
 // user profile
 router.get("/user/profile", function(req, res, next){
   res.render("user/profile");
 });
+
 
 
 // router
@@ -127,6 +136,13 @@ router.get("/user/profile", function(req, res, next){
 router.post("/user/signup", passport.authenticate('local.signup', {
   successRedirect: '/user/profile',
   failureRedirect: '/user/signup',
+  failureFlash: true
+}));
+
+
+router.post("/user/signin", passport.authenticate('local.signin', {
+  successRedirect: '/user/profile',
+  failureRedirect: '/user/signin',
   failureFlash: true
 }));
 
