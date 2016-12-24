@@ -11,19 +11,6 @@ var router = express.Router();
 var Product = require('../models/product.js');
 
 
-// csrf
-var csurf = require('csurf');
-
-// actually create csrf obj
-var csurfProtect = csurf();
-
-// passport
-var passport = require("passport");
-
-// as express router to use it
-router.use(csurfProtect);
-
-
 // router.get
 // root path
 // func, req, res, next
@@ -79,72 +66,6 @@ router.get('/', function(req, res, next) {
   });
 });
 
-
-// router
-// get
-// route: /user/signup
-// func, req, res, next
-// res
-// .render
-// the view user/signup
-// csrf, csrf token
-router.get("/user/signup", function(req, res, next){
-
-  // we define req.flash('error', msg) in passport.js
-  // error msg
-  // req
-  // flash
-  // error
-  var errorMsg = req.flash('error');
-
-  // res
-  // render
-  // route user/signup
-  // csrf protect
-  // req
-  // csrf token
-  // error msg
-  // error msg
-  // has error
-  // error msg length
-  // >0 
-  res.render("user/signup", {csurfProtect: req.csrfToken(), errorMsg: errorMsg, hasError: errorMsg.length > 0});
-});
-
-
-// sign in page
-router.get("/user/signin", function(req, res, next){
-  var errorMsg = req.flash('error');
-
-  res.render("user/signin", {csurfProtect: req.csrfToken(), errorMsg: errorMsg, hasError: errorMsg.length > 0});
-});
-
-
-// user profile
-router.get("/user/profile", function(req, res, next){
-  res.render("user/profile");
-});
-
-
-
-// router
-// post
-// /user/signup
-// func, req, res, next
-// res
-// redirect
-router.post("/user/signup", passport.authenticate('local.signup', {
-  successRedirect: '/user/profile',
-  failureRedirect: '/user/signup',
-  failureFlash: true
-}));
-
-
-router.post("/user/signin", passport.authenticate('local.signin', {
-  successRedirect: '/user/profile',
-  failureRedirect: '/user/signin',
-  failureFlash: true
-}));
 
 
 // module

@@ -39,8 +39,8 @@ var validator = require("express-validator");
 
 // this like the controller class
 // it has a few controller which links to view
-var index = require('./routes/index');
-
+var indexRoute = require('./routes/index');
+var userRoute = require('./routes/user');
 
 // localhost, port and db
 mongoose.connect('localhost:27017/shopping');
@@ -152,11 +152,14 @@ app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
 
 
+// before /
+app.use('/user', userRoute);
+
+
 // app.use
 // that is the entry point
 // index is the route, which is controller linking to views
-app.use('/', index);
-
+app.use('/', indexRoute);
 
 
 // app.use
