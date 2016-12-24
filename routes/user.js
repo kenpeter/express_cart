@@ -53,10 +53,17 @@ router.get("/signin", function(req, res, next){
 
 
 // user profile
-router.get("/profile", function(req, res, next){
+router.get("/profile", isLoggedIn, function(req, res, next){
   res.render("user/profile");
 });
 
+
+// logout
+router.get("/logout", function(req, res, next){
+  // from passport
+  res.logout();
+  res.redirect("/");
+});
 
 
 // router
@@ -78,5 +85,23 @@ router.post("/signin", passport.authenticate('local.signin', {
   failureFlash: true
 }));
 
+
+// func
+// is log in
+// req
+// res
+// next
+function isLoggedIn(req, res, next) {
+  // req
+  // is authenticated
+  if(req.isAuthenticated()) {
+    // return
+    // next
+    // ()
+    return next();
+  }
+
+  res.redirect("/");
+}
 
 module.exports = router;
