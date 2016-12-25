@@ -12,6 +12,7 @@ router.get("/profile", isLoggedIn, function(req, res, next){
 });
 
 
+
 // not login, then need to go to other place, cannot just
 // go to home page evey time.
 router.get("/", isNotLoggedIn, function(req, res, next){
@@ -64,10 +65,16 @@ router.get("/signin", function(req, res, next){
 });
 
 
+// req vs res
 // logout
-router.get("/logout", function(req, res, next){
+router.get("/logout", isLoggedIn, function(req, res, next){
   // from passport
-  res.logout();
+  // req logout
+  req.logout();
+  
+  // res
+  // result
+  // redirect
   res.redirect("/");
 });
 

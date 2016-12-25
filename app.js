@@ -152,6 +152,23 @@ app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
 
 
+// is login global var
+// app
+// .use
+// func
+// req
+// res
+// next
+app.use(function(req, res, next){
+  // res
+  // locals
+  // .isLogin
+  res.locals.isLogin = req.isAuthenticated();
+  next();
+});
+
+
+
 // before /
 app.use('/user', userRoute);
 
