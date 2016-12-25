@@ -6,6 +6,18 @@ var passport = require("passport");
 var csurfProtect = csurf();
 router.use(csurfProtect);
 
+// user profile
+router.get("/profile", isLoggedIn, function(req, res, next){
+  res.render("user/profile");
+});
+
+
+// not login, then need to go to other place, cannot just
+// go to home page evey time.
+router.get("/", isNotLoggedIn, function(req, res, next){
+  next();
+});
+
 
 // NOTE: because in app.js
 // we have app.use('/user', userRoute);
@@ -40,7 +52,7 @@ router.get("/signup", function(req, res, next){
   // has error
   // error msg length
   // >0 
-  res.render("/signup", {csurfProtect: req.csrfToken(), errorMsg: errorMsg, hasError: errorMsg.length > 0});
+  res.render("user/signup", {csurfProtect: req.csrfToken(), errorMsg: errorMsg, hasError: errorMsg.length > 0});
 });
 
 
@@ -49,12 +61,6 @@ router.get("/signin", function(req, res, next){
   var errorMsg = req.flash('error');
 
   res.render("user/signin", {csurfProtect: req.csrfToken(), errorMsg: errorMsg, hasError: errorMsg.length > 0});
-});
-
-
-// user profile
-router.get("/profile", isLoggedIn, function(req, res, next){
-  res.render("user/profile");
 });
 
 
@@ -98,6 +104,15 @@ function isLoggedIn(req, res, next) {
     // return
     // next
     // ()
+    return next();
+  }
+
+  res.redirect("/");
+}
+
+
+function isNotLoggedIn(req, res, next) {
+  if(!req.isAuthenticated()) {
     return next();
   }
 
