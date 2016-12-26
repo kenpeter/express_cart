@@ -8,7 +8,10 @@ var router = express.Router();
 
 // product
 // model product.js
-var Product = require('../models/product.js');
+var Product = require('../models/product');
+
+//
+var Cart = require("../models/cart");
 
 
 // router.get
@@ -66,6 +69,68 @@ router.get('/', function(req, res, next) {
   });
 });
 
+// router
+// .get
+// /add-to-cart
+// :id
+// func
+// req
+// res
+// next
+router.get("/add-to-cart/:id", function(req, res, next){
+  // var
+  // product id
+  // req
+  // params, from url
+  // id
+  var productId = req.params.id;
+  
+  // cart
+  // new
+  // Cart
+  // req.session, request session
+  // cart
+  // ?
+  // req.session.cart
+  // or empty obj
+  var cart = new Cart(
+    // req
+    // session
+    // cart
+    req.session.cart ? 
+    req.session.cart : 
+    {}
+  );
+  
+  // Product, model
+  // find by id
+  // product id
+  // func
+  // err,
+  // callback product
+  Product.findById(productId, function(err, product){
+    if(err) {
+      // result, not request
+      return res.redirect("/");
+    }
+    
+    // cart add single
+    // product
+    // product.id
+    cart.add(product, product.id);
+    
+    // in req,
+    // in session
+    // in cart
+    // add cart
+    req.session.cart = cart;
+    
+    console.log(req.session.cart);
+    
+    res.redirect("/");
+  });
+  
+});
 
 
 // module
