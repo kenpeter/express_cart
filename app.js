@@ -36,6 +36,12 @@ var flash = require("connect-flash");
 // validator
 var validator = require("express-validator");
 
+// mongo to store session
+// mongo store
+// require
+// connect mongo
+// session
+var MongoStore = require('connect-mongo')(session);
 
 // this like the controller class
 // it has a few controller which links to view
@@ -115,13 +121,26 @@ app.use(cookieParser());
 
 // app use
 // session
-// secret: secret
-// resave: false, don't resave session
-// save uninitialized, false, don't save session, if not init
 app.use(session({
+  // secrect
   secret: "secret",
+  
+  // resave
+  // false
   resave: false,
-  saveUninitialized: false
+  
+  // save uninitilized
+  // false
+  saveUninitialized: false,
+  
+  // store
+  // new
+  // mongo store
+  store: new MongoStore({ mongooseConnection: mongoose.connection }),
+  // cookie
+  // max age
+  // 180, 60, 1000
+  cookie: { maxAge: 180 * 60 * 1000 }
 }));
 
 
@@ -164,6 +183,14 @@ app.use(function(req, res, next){
   // locals
   // .isLogin
   res.locals.isLogin = req.isAuthenticated();
+  
+  // res
+  // locals
+  // session
+  res.locals.session = req.session;
+  
+  // next
+  // ()
   next();
 });
 
