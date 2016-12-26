@@ -132,6 +132,41 @@ router.get("/add-to-cart/:id", function(req, res, next){
   
 });
 
+// router
+// get
+// /shopping-cart
+// func
+// req, res, next
+router.get("/shopping-cart", function(req, res, next){
+  // if no cart
+  // req
+  // session
+  // cart
+  if(!req.session.cart) {
+    // return
+    // res
+    // render
+    // shop
+    // shopping-cart
+    // {}
+    // products null
+    return res.render("shop/shopping-cart", {products: null});
+  }
+
+  // var cart
+  // new
+  // Cart
+  // req
+  // session
+  // cart
+  var cart = new Cart(req.session.cart);
+  res.render("shop/shopping-cart", {
+    products: cart.generateArray(),
+    totalPrice: cart.totalPrice
+  });
+  
+});
+
 
 // module
 // exports
