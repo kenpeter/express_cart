@@ -220,25 +220,36 @@ router.post("/checkout", function(req, res, next){
   // secret key
   var stripe = require("stripe")("sk_test_zVNSQ06wz3rTN2tK5DCwSgo5");
   
+  var token = req.body.stripeToken;
+  
+  //test
+  console.log("test");
+  console.log(token);
+  
   // charge
   // stripe
   // charges
   // create
   var charge = stripe.charges.create({
     // amount
-    amount: 10, // Amount in cents
+    amount: cart.totalPrice * 100, // Amount in cents
     // currency
     currency: "aud",
-    source: req.body.stripeToken,
+    source: token,
     description: "test"
   }, function(err, charge) {
-    if (err && err.type === 'StripeCardError') {
+    if (err) {
       // The card has been declined
       // req
       // flash
       // error
       // err
       // .msg
+      req.flash("error", err.message);
+      return res.redirect("/checkout");
+    }
+    
+    if(err && err.type === 'StripeCardError') {
       req.flash("error", err.message);
       return res.redirect("/checkout");
     }
