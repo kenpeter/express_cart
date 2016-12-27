@@ -18,6 +18,12 @@ var Cart = require("../models/cart");
 // root path
 // func, req, res, next
 router.get('/', function(req, res, next) {
+  // var success msg
+  // req
+  // flash
+  // success
+  // [0]
+  var successMsg = req.flash('success')[0];
   
   // var products
   // Product monga
@@ -63,7 +69,9 @@ router.get('/', function(req, res, next) {
     res.render('shop/index', {
       title: 'Shopping cart',
       productRow: productRow,
-      productRowTest: productRowTest
+      productRowTest: productRowTest,
+      successMsg: successMsg,
+      noMessage: !successMsg
     });
     
   });
@@ -164,6 +172,93 @@ router.get("/shopping-cart", function(req, res, next){
     products: cart.generateArray(),
     totalPrice: cart.totalPrice
   });
+  
+});
+
+
+// router
+// get
+// checkout
+// func
+// req, res, next
+router.get("/checkout", function(req, res, next){
+  // if
+  // !req
+  // .session
+  // .cart
+  if(!req.session.cart) {
+    // return
+    // res
+    // .redirect
+    // /shop
+    return res.redirect("/shopping-cart");
+  }
+
+  var cart = new Cart(req.session.cart);
+  var errMsg = req.flash("error")[0];
+  
+  res.render("shop/checkout", {
+    total: cart.totalPrice,
+    errMsg: errMsg,
+    noError: !errMsg
+  });
+  
+});
+
+
+router.post("/checkout", function(req, res, next){
+  // no cart
+  if(!req.session.cart) {
+    // res redirect
+    // 
+    return res.redirect("/shopping-cart");
+  }
+  
+  // cart obj
+  var cart = new Cart(req.session.cart);
+  
+  // secret key
+  var stripe = require("stripe")("sk_test_zVNSQ06wz3rTN2tK5DCwSgo5");
+  
+  // charge
+  // stripe
+  // charges
+  // create
+  var charge = stripe.charges.create({
+    // amount
+    amount: 10, // Amount in cents
+    // currency
+    currency: "aud",
+    source: req.body.stripeToken,
+    description: "test"
+  }, function(err, charge) {
+    if (err && err.type === 'StripeCardError') {
+      // The card has been declined
+      // req
+      // flash
+      // error
+      // err
+      // .msg
+      req.flash("error", err.message);
+      return res.redirect("/checkout");
+    }
+    
+    // req
+    // flash
+    // "success"
+    req.flash("success", "Bought a product!");
+
+    // req
+    // session
+    // cart, null    
+    req.session.cart = null;
+    
+    // res
+    // redirect
+    res.redirect("/");
+    
+  });
+  
   
 });
 
