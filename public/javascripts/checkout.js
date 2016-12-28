@@ -18,12 +18,14 @@ $form.submit(function(event){
   var exp_year = $('#card-expiry-year').val();
   var name = $('#card-name').val();
 
+  /*
   console.log("test credit info");
   console.log(number);
   console.log(cvc);
   console.log(exp_month);
   console.log(exp_year);
   console.log(name);
+  */
 
   // Stripe
   // card
@@ -75,9 +77,11 @@ function stripeResponseHandler(status, response) {
     // id
     var token = response.id;
     
+    /*
     //test
     console.log("test token");
     console.log(token);
+    */
     
     // $form
     // append

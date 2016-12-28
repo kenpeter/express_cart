@@ -65,8 +65,9 @@ router.get("/signin", function(req, res, next){
 });
 
 
-// req vs res
-// logout
+// e.g. already login, but click logout link
+// isLoggedIn goes to whatever next
+// now req.logout
 router.get("/logout", isLoggedIn, function(req, res, next){
   // from passport
   // req logout
@@ -86,17 +87,48 @@ router.get("/logout", isLoggedIn, function(req, res, next){
 // res
 // redirect
 router.post("/signup", passport.authenticate('local.signup', {
-  successRedirect: '/user/profile',
   failureRedirect: '/user/signup',
   failureFlash: true
-}));
+}), function(req, res, next){
+  if(req.session.oldUrl) {
+    var oldUrl = req.session.oldUrl;
+    req.session.oldUrl = null;
+    res.redirect(oldUrl);
+  }
+  else {
+    res.redirect("/user/profile");
+  } 
+});
 
 
+// router
+// post
+// signin
+// passport
+// authenticate
+// local.signin, which is policy
+// fail then redirect, /user/signin
+// fail then flash
 router.post("/signin", passport.authenticate('local.signin', {
-  successRedirect: '/user/profile',
   failureRedirect: '/user/signin',
   failureFlash: true
-}));
+}), function(req, res, next) {
+  // if req
+  // session
+  // old url
+  if(req.session.oldUrl) {
+    var oldUrl = req.session.oldUrl;
+    req.session.oldUrl = null;
+    res.redirect(oldUrl);
+  }
+  else {
+    // e.g. if you are already logout
+    // that means no req.session
+    // has to back to /user/profile
+    // default to user profile
+    res.redirect("/user/profile");
+  }
+});
 
 
 // func
@@ -105,8 +137,7 @@ router.post("/signin", passport.authenticate('local.signin', {
 // res
 // next
 function isLoggedIn(req, res, next) {
-  // req
-  // is authenticated
+  // it is alread login, so go to whatever next
   if(req.isAuthenticated()) {
     // return
     // next
@@ -114,6 +145,7 @@ function isLoggedIn(req, res, next) {
     return next();
   }
 
+  // not login, back to home page
   res.redirect("/");
 }
 

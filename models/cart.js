@@ -1,7 +1,10 @@
-// module, single
-// exports
-// func
-// Cart, constructor
+// cart
+// has all items this.items[id] = {item: item, qty: ?, price: ?}
+// items is obj, not array
+// has total qty
+// has total price
+// cart has no collections
+// it has add func and gen array func
 module.exports = function Cart(oldCart) {
   // this, this ojb
   // items
@@ -37,6 +40,7 @@ module.exports = function Cart(oldCart) {
     
     // never inside this cart obj
     if(!storedItem) {
+      // here for each item, we extend item with qty and price.
       // stored item
       // this
       // items

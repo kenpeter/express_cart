@@ -1,3 +1,5 @@
+// product has product image, product title, product description, product price
+// it has collection
 // mongo db
 var mongoose = require('mongoose');
 

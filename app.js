@@ -230,6 +230,7 @@ app.use(function(req, res, next) {
 // app.use
 // does it mean you can add err when you need to
 app.use(function(err, req, res, next) {
+  // req.locals if for handle bar
   // set locals, only providing error in development
   // http://expressjs.com/en/api.html#res.locals
   // res

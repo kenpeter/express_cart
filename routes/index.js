@@ -10,9 +10,11 @@ var router = express.Router();
 // model product.js
 var Product = require('../models/product');
 
-//
+// cart
 var Cart = require("../models/cart");
 
+// Order
+var Order = require("../models/order");
 
 // router.get
 // root path
@@ -122,18 +124,20 @@ router.get("/add-to-cart/:id", function(req, res, next){
       return res.redirect("/");
     }
     
+    
     // cart add single
     // product
     // product.id
     cart.add(product, product.id);
     
+    // here we add cart to req.session.cart
     // in req,
     // in session
     // in cart
     // add cart
     req.session.cart = cart;
     
-    console.log(req.session.cart);
+    //console.log(req.session.cart);
     
     res.redirect("/");
   });
@@ -181,7 +185,7 @@ router.get("/shopping-cart", function(req, res, next){
 // checkout
 // func
 // req, res, next
-router.get("/checkout", function(req, res, next){
+router.get("/checkout", isLoggedIn, function(req, res, next){
   // if
   // !req
   // .session
@@ -206,7 +210,11 @@ router.get("/checkout", function(req, res, next){
 });
 
 
-router.post("/checkout", function(req, res, next){
+// router
+// post
+// checkout post
+// middle ware, is logged in, now /checkout becomes the req.sesson.oldUrl
+router.post("/checkout", isLoggedIn, function(req, res, next){
   // no cart
   if(!req.session.cart) {
     // res redirect
@@ -222,9 +230,11 @@ router.post("/checkout", function(req, res, next){
   
   var token = req.body.stripeToken;
   
+  /*
   //test
   console.log("test");
   console.log(token);
+  */
   
   // charge
   // stripe
@@ -254,25 +264,62 @@ router.post("/checkout", function(req, res, next){
       return res.redirect("/checkout");
     }
     
-    // req
-    // flash
-    // "success"
-    req.flash("success", "Bought a product!");
-
-    // req
-    // session
-    // cart, null    
-    req.session.cart = null;
+    var order = new Order({
+      // user
+      // req, coming from passport req.user
+      user: req.user,
+      // from above, from a session
+      cart: cart,
+      // address
+      // the input field from req.body
+      address: req.body.address,
+      // 
+      name: req.body.name,
+      // charge.id is from stripe doc
+      paymentId: charge.id
+    });
     
-    // res
-    // redirect
-    res.redirect("/");
+    order.save(function(err, result){
+      if(err) {
+        console.log("---- error ----");
+        console.log("order save error");
+      }
+    
+      // req
+      // flash
+      // "success"
+      req.flash("success", "Bought a product!");
+
+      // req
+      // session
+      // cart, null    
+      req.session.cart = null;
+      
+      // res
+      // redirect
+      res.redirect("/");
+    });
+    
+    
     
   });
   
   
 });
 
+
+// it uses to protect checkout get and post
+function isLoggedIn(req, res, next) {
+  if(req.isAuthenticated()) {
+    return next();
+  }
+  
+  // here we actually created the req.session.oldUrl
+  // req.url, what is this? req.url == /checkout, or any url previously
+  req.session.oldUrl = req.url;
+  
+  res.redirect("/user/signin");
+}
 
 // module
 // exports

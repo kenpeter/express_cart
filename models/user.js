@@ -1,4 +1,7 @@
-// mongo db
+// user has email and password
+// it also has encrypt password
+// it also has validate password
+// it has collection
 var mongoose = require("mongoose");
 
 // empty schema
