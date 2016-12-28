@@ -144,6 +144,35 @@ router.get("/add-to-cart/:id", function(req, res, next){
   
 });
 
+
+router.get("/reduce/:id", function(req, res, next){
+  var productId = req.params.id;
+  var cart = new Cart(req.session.cart ? req.session.cart : {});
+
+  cart.reduceByOne(productId);
+  
+  // after reduce one, need to reassign cart into session.
+  req.session.cart = cart;
+  
+  // shopping-cart is where we have list of products
+  res.redirect("/shopping-cart");
+});
+
+
+router.get("/remove/:id", function(req, res, next){
+  var productId = req.params.id;
+  var cart = new Cart(req.session.cart ? req.session.cart : {});
+
+  cart.removeItem(productId);
+  
+  // after reduce one, need to reassign cart into session.
+  req.session.cart = cart;
+  
+  // shopping-cart is where we have list of products
+  res.redirect("/shopping-cart");
+});
+
+
 // router
 // get
 // /shopping-cart

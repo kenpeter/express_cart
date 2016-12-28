@@ -3,12 +3,43 @@ var router = express.Router();
 var csurf = require('csurf');
 var passport = require("passport");
 
+var Order = require("../models/order");
+var Cart = require("../models/cart");
+
 var csurfProtect = csurf();
 router.use(csurfProtect);
 
 // user profile
 router.get("/profile", isLoggedIn, function(req, res, next){
-  res.render("user/profile");
+  // Order is user, cart, etc
+  // find
+  // req.user is from passport
+  // remmeber Order is mongo,
+  // {user: req.user} is looking for
+  // func, err, orders
+  Order.find({user: req.user}, function(err, orders){
+    if(err) {
+      // return
+      // res
+      // res.write????
+      console.log("profile error");
+      return res.write("error!");
+    }
+    
+    var cart;
+    // so basically, we modify the orders, adding extra items
+    orders.forEach(function(order){
+      // remember each order has a cart in mongo
+      // order.cart is all items + total qty + total price
+      // a single item is imagePath, desc, price + total qty of that kind + single price of that kind
+      // Cart is similar to order's cart, except adding add and array gen method
+      cart = new Cart(order.cart);
+      order.items = cart.generateArray();
+    });
+    
+    res.render("user/profile", {orders: orders});
+  });
+  
 });
 
 

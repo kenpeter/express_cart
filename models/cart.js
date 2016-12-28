@@ -6,61 +6,37 @@
 // cart has no collections
 // it has add func and gen array func
 module.exports = function Cart(oldCart) {
-  // this, this ojb
-  // items
-  // old cart
-  // items
+  // old carts items
   this.items = oldCart.items || {};
   
-  // this
-  // total qty
-  // old cart
-  // total qty
+  // old cart has total qty
   this.totalQty = oldCart.totalQty || 0;
 
-  // this
-  // total price
-  // old cart
-  // total price
+  // old cart has total price
   this.totalPrice = oldCart.totalPrice || 0;
   
   
-  // this only add a single item
-  // this add
-  // func
-  // item, the product
-  // id, product id
+  // add
+  // item and product id
   this.add = function(item, id) {
-    // var
-    // stored item
     // this
-    // .items, this Cart property
+    // .items
     // [id]
     var storedItem = this.items[id];
     
-    // never inside this cart obj
+    // no such item
     if(!storedItem) {
-      // here for each item, we extend item with qty and price.
-      // stored item
-      // this
-      // items
-      // [id]
-      // this.items
-      // this.totalQty
-      // this.totalPrice
+      // item: item
+      // qty: 0, why 0? increment below
+      // price: total price of same kind
+      // so they are referenced with each, one changes, the other changes.
       storedItem = this.items[id] = {item: item, qty: 0, price: 0};
     }
   
-    // stored item
-    // qty
-    // ++
+    // now here we add one, it can be empty or existing
     storedItem.qty++;
     
-    // stored item
-    // price, total price in cart for same kind
-    // storedItem.item === a single item
-    // storedItem.qty === total item num of same kind
-    // storedItem.price === total price of the same kind
+    // here we actually change the price of store item.
     storedItem.price = storedItem.item.price * storedItem.qty;
     
     // total qty in the cart
@@ -68,7 +44,43 @@ module.exports = function Cart(oldCart) {
     
     // this only adds a single item
     this.totalPrice += storedItem.item.price;
+    
+    /*
+    // what happend to this.items[id]
+    console.log("test");
+    console.log(storedItem);
+    console.log(this.items[id]);
+    */
   }
+  
+  // reduce an single item of same kind
+  this.reduceByOne = function(id) {
+    // product of same kind
+    this.items[id].qty--;
+    this.items[id].price -= this.items[id].item.price;
+    
+    // total
+    this.totalQty--;
+    this.totalPrice -= this.items[id].item.price;
+    
+    if(this.items[id].qty <= 0) {
+      // so you can delete obj like this.
+      delete this.items[id];
+    }
+  }
+  
+  // remove all items of same kind
+  this.removeItem = function(id) {    
+    // qty is total qty of same kind, see db
+    this.totalQty -= this.items[id].qty;
+    
+    // price is total price of same kind, see db
+    this.totalPrice -= this.items[id].price;
+   
+    // delete
+    delete this.items[id]; 
+  }
+  
   
   this.generateArray = function() {
     // empty arr
